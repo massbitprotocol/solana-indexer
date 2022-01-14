@@ -1,12 +1,12 @@
 use std::collections::{BTreeMap, HashMap};
 use std::iter::Map;
-
+#[derive(Clone, Debug)]
 pub struct TransportValue {
     name: String,
     values: HashMap<String, Value>
 }
 
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Value {
     Null,
     Bool(bool),
