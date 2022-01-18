@@ -2,8 +2,8 @@ use std::collections::{BTreeMap, HashMap};
 use std::iter::Map;
 #[derive(Clone, Debug)]
 pub struct TransportValue {
-    name: String,
-    values: HashMap<String, Value>
+    pub name: String,
+    pub values: HashMap<String, Value>
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
