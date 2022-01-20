@@ -1,8 +1,7 @@
-use std::error::Error;
 use crate::TransportValue;
 
 pub trait InstructionParser: Sync + Send {
-    fn unpack_instruction(&self,content: &[u8]) -> Result<TransportValue, Box<dyn Error>>;
+    fn unpack_instruction(&self,content: &[u8]) -> Result<TransportValue,anyhow::Error>;
 }
 
 pub trait InterfaceRegistrar: Sync + Send {
