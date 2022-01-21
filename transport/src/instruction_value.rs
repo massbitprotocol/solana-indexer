@@ -1,5 +1,7 @@
 use std::collections::{BTreeMap, HashMap};
 use std::iter::Map;
+use uuid::Uuid;
+
 #[derive(Clone, Debug)]
 pub struct TransportValue {
     pub name: String,
@@ -16,12 +18,10 @@ pub enum Value {
     U16(u16),
     U32(u32),
     U64(u64),
-    U128(u128),
     I8(i8),
     I16(i16),
     I32(i32),
     I64(i64),
-    I128(i128),
     Array(Vec<Value>),
     Object(HashMap<String, Value>)
 }
@@ -30,7 +30,7 @@ impl Default for TransportValue {
     fn default() -> Self {
         Self {
             name: "".to_string(),
-            values: HashMap::default()
+            values: HashMap::from([("id".to_string(), Value::String(Uuid::new_v4().to_string()))])
         }
     }
 }
@@ -39,7 +39,7 @@ impl TransportValue {
     pub fn new(name: &str) -> Self {
         Self {
             name: String::from(name),
-            values: HashMap::default()
+            values: HashMap::from([("id".to_string(), Value::String(Uuid::new_v4().to_string()))])
         }
     }
     pub fn set_value(&mut self, key: &str, value: Value) {
@@ -88,16 +88,16 @@ impl From<i64> for Value {
         Value::I64(value)
     }
 }
-impl From<u128> for Value {
-    fn from(value: u128) -> Value {
-        Value::U128(value)
-    }
-}
-impl From<i128> for Value {
-    fn from(value: i128) -> Value {
-        Value::I128(value)
-    }
-}
+// impl From<u128> for Value {
+//     fn from(value: u128) -> Value {
+//         Value::U128(value)
+//     }
+// }
+// impl From<i128> for Value {
+//     fn from(value: i128) -> Value {
+//         Value::I128(value)
+//     }
+// }
 
 impl From<bool> for Value {
     fn from(value: bool) -> Value {
@@ -114,5 +114,26 @@ impl From<String> for Value {
 impl From<&str> for Value {
     fn from(value: &str) -> Value {
         Value::String(value.to_string())
+    }
+}
+
+impl<T> From<Vec<T>> for Value
+    where
+        Value: From<T>,
+{
+    fn from(x: Vec<T>) -> Value {
+        x.into_iter().map(|item| item.into()).collect::<Vec<Value>>().into()
+    }
+}
+
+impl<T> From<Option<T>> for Value
+    where
+        Value: From<T>,
+{
+    fn from(x: Option<T>) -> Value {
+        match x {
+            Some(x) => x.into(),
+            None => Value::Null,
+        }
     }
 }
